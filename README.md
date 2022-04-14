@@ -9,6 +9,9 @@ Compatible with the Poseidon implementations:
 - Go: https://github.com/iden3/go-iden3-crypto
 - Js & circom: https://github.com/iden3/circomlib
 
-## Warning
-Do not use in production
+## Notes
+
+Modified to work with BLS12-377 curve.
+
+Constants have been updated for the case of use of a binary merkle tree
 
