@@ -95,11 +95,7 @@ impl Poseidon {
                 let mut mij = m[i][j];
                 mij.mul_assign(&state[j]);
                 new_state[i].add_assign(&mij);
-                println!("State after mixing ij {} {} {}", i,j,state[i]);
-
-                // stateMIJ * state[j]
             }
-            println!("State after mixing {}: {}", i, new_state[i]);
         }
         new_state.clone()
     }
