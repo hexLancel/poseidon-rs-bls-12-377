@@ -58,26 +58,19 @@ impl Poseidon {
             constants: load_constants(),
         }
     }
-    pub fn ark(&self, state: &mut Vec<Fr>, c: &Vec<Fr>, it: usize) {
-        
-        println!("it: {}", it);
+    pub fn ark(&self, state: &mut Vec<Fr>, c: &Vec<Fr>, it: usize) {        
         for i in 0..state.len() {
-            println!("state i: {}", state[i] );
             state[i].add_assign(&c[it + i]);
-            println!("Constant: {}", c[it + i]);
-            println!("New State for {}: {}",i,state[i]);
         }
     }
 
     pub fn sbox(&self, n_rounds_f: usize, n_rounds_p: usize, state: &mut Vec<Fr>, i: usize) {
         if i < n_rounds_f / 2 || i >= n_rounds_f / 2 + n_rounds_p {
-            println!("Full round: {}",i);
             for j in 0..state.len() {
                 let aux = state[j];
                 state[j].square();
                 state[j].square();
                 state[j].mul_assign(&aux);
-                println!("State after sbox {}: {}", i, state[j]);
             }
         } else {
             let aux = state[0];
@@ -102,7 +95,6 @@ impl Poseidon {
 
     pub fn hash(&self, inp: Vec<Fr>) -> Result<Fr, String> {
         let t = inp.len() + 1;
-        println!("t: {}", t);
         if inp.len() == 0 || inp.len() >= self.constants.n_rounds_p.len() - 1 {
             return Err("Wrong inputs length".to_string());
         }
@@ -111,13 +103,10 @@ impl Poseidon {
 
         let mut state = vec![Fr::zero(); t];
         state[1..].clone_from_slice(&inp);
-        println!("Initial state: {:?}", state);
 
         for i in 0..(n_rounds_f + n_rounds_p) {
-            //println!("First Ark constant: {}", self.constants.c[t - 2][0]);
             self.ark(&mut state, &self.constants.c[t - 2], i * t);
             self.sbox(n_rounds_f, n_rounds_p, &mut state, i);
-            //println!("First M constant: {:?}", self.constants.m[t - 2][0]);
             state = self.mix(&state, &self.constants.m[t - 2]);
         }
 
